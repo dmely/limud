@@ -1,0 +1,111 @@
+{% extends "layout.html" %}
+{% block body %}
+<form method="post">
+<div class="centered-container">
+<div class="conjugation-container">
+<table style="border-spacing: 0px;">
+<tbody>
+    <!-- Every th, td, tr containing a word has a pre-set height,
+    but these should be the exception because these are "virtual"
+    th, td, tr for the sole purpose of containing another table. -->
+    <tr class="conjugation-supercell" style="height: 14%;">
+        <td class="conjugation-supercell">
+            <table style="table-layout: fixed;">
+                <tbody>
+                <tr>
+                    {% if edit == 0 %}
+                    <th style="width: 25%;">Pf. (3ms)</th>
+                    <th style="width: 25%;">Inf. Cst.</th>
+                    <th style="width: 25%;">Inf. Abs.</th>
+                    <th style="width: 25%;">Ptc. (ms)</th>
+                    {% else %}
+                    <th style="width: 50%;">Inf. Cst.</th>
+                    <th style="width: 50%;">Inf. Abs.</th>
+                    {% endif %}
+                </tr>
+                <tr>
+                    {% if edit == 0 %}
+                    <td class="conjugation-entry">
+                        <!-- Redundant entries, shown at the top only when not editing -->
+                        <input disabled="disabled" type="text" dir="rtl" xml:lang="he" lang="he"
+                            value="{{ get_conjugation_str(binyan, 0, 2, 0, 0) }}"/>
+                    </td>
+                    {% endif %}
+                    <td class="conjugation-entry">
+                        <input name="7" {{ 'disabled="disabled"' if edit == 0 }}
+                            value="{{ get_conjugation_str(binyan, 7, 0, 0, 0) }}"
+                            type="text" dir="rtl" xml:lang="he" lang="he"/>
+                    </td>
+                    <td class="conjugation-entry">
+                        <input name="6" {{ 'disabled="disabled"' if edit == 0 }}
+                            value="{{ get_conjugation_str(binyan, 6, 0, 0, 0) }}"
+                            type="text" dir="rtl" xml:lang="he" lang="he"/>
+                    </td>
+                    {% if edit == 0 %}
+                    <td class="conjugation-entry">
+                        <!-- Redundant entries, shown at the top only when not editing -->
+                        <input disabled="disabled" type="text" dir="rtl" xml:lang="he" lang="he"
+                            value="{{ get_conjugation_str(binyan, 4, 1, 0, 0) }}"/>
+                    </td>
+                    {% endif %}
+                </tr>
+            </tbody>
+            </table>
+        </td>
+    </tr>
+    <!-- See previous comment. -->
+    <tr class="conjugation-supercell" style="height: 86%;">
+        <td class="conjugation-supercell">
+            <table style="table-layout: fixed;">
+                <tbody>
+                <!-- Generate headers for tenses in row 3 -->
+                <tr>
+                    <th style="width: 8%;">Pronoun</th>
+                    {% for tense in all_tenses_except_the_infinitives %}
+                        <th style="width: 11.5%;">{{ label_tense(tense) }}</th>
+                    {% endfor %}
+                </tr>
+                {% for person, gender, number in all_pronouns %}
+                <tr>
+                    <!-- Generate headers in left-most column -->
+                    {% if pronouns_lang == "he" %}
+                    <th style="font-size: 150%;">
+                        {{ translate_pronouns(person, gender, number) }}
+                    </th>
+                    {% else %}
+                    <th>
+                        {{ label_pronouns(person, gender, number) }}
+                    </th>
+                    {% endif %}
+
+                    <!-- Generate columns to the right of those headers -->
+                    {% for tense in all_tenses_except_the_infinitives %}
+                    <td class="conjugation-entry">
+                        <input name="{{ conjugation_pack(tense, person, gender, number) }}"
+                            value="{{ get_conjugation_str(binyan, tense, person, gender, number) }}"
+                            {{ 'disabled="disabled"' if edit == 0 }}
+                            {% if true_length_of_hebrew_string(get_conjugation_str(binyan, tense, person, gender, number)) > 7 %}
+                            style="font-size: 120%;"
+                            {% endif %}
+                            type="text" dir="rtl" xml:lang="he" lang="he"/>
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </td>
+    </tr>
+</tbody>
+</table>
+{% if edit == 1 %}
+<div>
+    <button class="flashcard-button" type="submit" name="button_press" value="save">
+        Save conjugation table
+    </button>
+</div>
+{% endif %}
+</div>
+</div>
+</form>
+{% endblock %}

@@ -1,0 +1,51 @@
+/* See also: https://stackoverflow.com/a/48386400 */
+
+@import "colors.css";
+@import "fonts.css";
+
+.edit-form {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: auto auto;
+    justify-content: center;
+}
+
+.edit-form label {
+    color: var(--label-compulsory);
+    border: none;
+    font-family: 'Roboto';
+    font-weight: 500;
+    font-size: 22px;
+    text-align: right;
+    margin: 8px 0;
+}
+
+.edit-form label.optional {
+    color: var(--label-optional);
+    font-weight: 400;
+}
+
+.edit-form input, .edit-form select {
+    width: 500px;
+    background-color: var(--geombg);
+    color: white;
+    border: none;
+    font-family: 'Roboto', 'Bellefair';
+    font-weight: normal;
+    font-size: 16px;
+}
+
+/* Hebrew formatting: edit form */
+.edit-form input:lang(he) {
+    font-family: 'Bellefair';
+    font-size: 200%;
+}
+
+input:lang(he) {
+    font-family: 'Bellefair';
+    font-size: 150%;
+    font-weight: 100;
+	direction: rtl;
+    text-align: right;
+    color: white;
+}

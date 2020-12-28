@@ -1,0 +1,54 @@
+@font-face {
+    font-family: 'Keter YG';
+    font-style: normal;
+    font-weight: 600;
+    src: url('../fonts/KeterYG-Medium.ttf') format('truetype');
+    unicode-range: U+0590-05FF, U+FB1D-FB4F;
+}
+
+@font-face {
+    font-family: 'Bellefair';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../fonts/Bellefair-Regular.ttf') format('truetype');
+    unicode-range: U+0590-05FF, U+FB1D-FB4F;
+}
+
+@font-face {
+    font-family: 'Roboto', sans-serif;
+    src: url('../fonts/Roboto-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Roboto', sans-serif;
+    src: url('../fonts/Roboto-Medium.ttf') format('truetype');
+    font-weight: medium;
+    font-style: medium;
+}
+
+@font-face {
+    font-family: 'Crimson Text';
+    src: url('../fonts/CrimsonText-Italic.ttf');
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+}
+  
+@font-face {
+    font-family: 'Crimson Text';
+    src: url('../fonts/CrimsonText-Regular.ttf');
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Crimson Text';
+    src: url('../fonts/CrimsonText-SemiBold.ttf');
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+}
+  

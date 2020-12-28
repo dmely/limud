@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link type="text/css" href="{{ url_for('static', filename='styles/style.css') }}" rel="stylesheet"/>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <title>Biblical Hebrew flashcards</title>
+
+    <!-- Display dropdown contextual menu -->
+    <div class="dropdown" id="main-menu">
+        <button class="dropbtn-main" id="main-menu-btn">Menu</button>
+        <div class="dropdown-content" style="position: relative; left: 0px; top: 0px;">
+            <a href="{{ url_for('home.index') }}">Home</a>
+            <a href="{{ url_for('vocabulary.add_word') }}">Vocabulary: Extend</a>
+
+            <!-- "Practice flashcards" sub-menu -->
+            <div class="dropdown">
+                <button class="dropbtn">Vocabulary: Practice</button>
+                <div class="dropdown-content">
+                    <a href="{{ url_for('vocabulary.practice_all') }}">All words</a>
+                    <a href="{{ url_for('vocabulary.practice_all_favorites') }}">All favorites</a>
+                    <div class="dropdown">
+                        <button class="dropbtn">By category</button>
+                        <div class="dropdown-content">
+                        {% for gc in all_grammatical_categories %}
+                            <a href="{{ url_for('vocabulary.practice_by_category', category=gc) }}">
+                                {{ gc.capitalize() }}
+                            </a>
+                        {% endfor %}
+                        </div>
+                    </div>
+                    <div class="dropdown">
+                        <button class="dropbtn">By chapter</button>
+                        <div class="dropdown-content">
+                        {% for cid in all_chapters_ids %}
+                            <a href="{{ url_for('vocabulary.practice_by_chapter', chapter_id=cid) }}">
+                                Chapter {{ cid }}
+                            </a>
+                        {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- "Review flashcards" sub-menu -->
+            <div class="dropdown">
+                <button class="dropbtn">Vocabulary: Review</button>
+                <div class="dropdown-content">
+                    <a href="{{ url_for('vocabulary.review_all') }}">All words</a>
+                    <a href="{{ url_for('vocabulary.review_all_favorites') }}">All favorites</a>
+                    <div class="dropdown">
+                        <button class="dropbtn">By category</button>
+                        <div class="dropdown-content">
+                        {% for gc in all_grammatical_categories %}
+                            <a href="{{ url_for('vocabulary.review_by_category', category=gc) }}">
+                                {{ gc.capitalize() }}
+                            </a>
+                        {% endfor %}
+                        </div>
+                    </div>
+                    <div class="dropdown">
+                        <button class="dropbtn">By chapter</button>
+                        <div class="dropdown-content">
+                        {% for cid in all_chapters_ids %}
+                            <a href="{{ url_for('vocabulary.review_by_chapter', chapter_id=cid) }}">
+                                Chapter {{ cid }}
+                            </a>
+                        {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <a href="{{ url_for('wotm.display_from_scrapping_random') }}">Word of the moment</a>
+            <div class="dropdown">
+                <button class="dropbtn">Conjugation: Practice</button>
+                <div class="dropdown-content">
+                    <a href="{{ url_for('conjugation.practice_all') }}">All</a>
+                    {% for binyan in all_binyanim %}
+                        <a href="{{ url_for('conjugation.practice_binyan', binyan=binyan) }}">
+                            {{ binyan.capitalize() }}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="dropbtn">Conjugation: Review</button>
+                <div class="dropdown-content">
+                    {% for binyan in all_binyanim %}
+                        <a href="{{ url_for('conjugation.review', edit=0, binyan=binyan) }}">
+                            {{ binyan.capitalize() }}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div> 
+</head>
+<body>
+{% block body %}
+{% endblock %}
+</body>
+</html>  

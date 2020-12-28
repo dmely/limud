@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="centered-container flashcard-container">
+<table class="flashcard-container-progress-bar">
+    <!-- Empty table to force the "flashcard" to be the same size
+         as in flashcards.html or in game.html. -->
+    <tbody><tr><td>
+    <div style="width: 0%;" />
+    </td></tr></tbody>
+</table>
+<table class="flashcard-container-word">
+    <tbody>
+    <tr>
+    <td>
+        <form method="POST">
+            <button type="submit" name="button_press" value="flip">
+                {% if render_front_of_flashcard  %}
+                <span class="flashcard-front">{{ content }}</span>
+                {% else %}
+                <span class="flashcard-back">{{ content }}</span>
+                {% endif %}
+            </button>
+        </form>
+    </td>
+    </tr>
+    </tbody>
+</table>
+<table class="flashcard-container-buttons">
+    <tbody>
+    <tr>
+    <td style="text-align: center;">
+        <a href="{{ url_for('wotm.display_from_scrapping_random') }}">
+            <button class="flashcard-button">New Word</button></a>
+    </td>
+    <td style="text-align: center;">
+        <form method="POST">
+        <button class="flashcard-button"
+            type="submit" name="button_press" value="flip">Flip</button>
+        </form>
+    </td>
+    <td style="text-align: center;">
+        <a href="{{ origin_url }}">
+            <button class="flashcard-button">Source</button></a>
+    </td>
+    </tr>
+    </tbody>
+</table>
+</div>
+{% endblock %}

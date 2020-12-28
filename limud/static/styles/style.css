@@ -1,0 +1,29 @@
+@import "colors.css";
+@import "conjugation.css";
+@import "dropdown.css";
+@import "editform.css";
+@import "fonts.css";
+@import "flashcard.css";
+
+.centered-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    border: none;
+    padding: 0px;
+}
+
+/* Hebrew formatting: splash screen */
+.splash-screen-word {
+    font-family: 'Keter YG', 'Bellefair';
+    font-size: 2700%;
+    direction: rtl;
+    text-align: right;
+    color: var(--splashtext);
+}
+
+body {
+    background-color: var(--bodybg);
+}

@@ -1,0 +1,69 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="centered-container flashcard-container">
+<table class="flashcard-container-progress-bar">
+    <!-- Progress bar is just a div tag -->
+    <tbody><tr><td>
+    <div style="width: {{ progress_percent }}%;" />
+    </td></tr></tbody>
+</table>
+<table class="flashcard-container-word">
+    <tbody>
+    <tr>
+    <td>
+        <form method="POST">
+            <button type="submit" name="button_press" value="flip">
+                {% if render_front_of_flashcard  %}
+                <span class="flashcard-front">{{ content }}</span>
+                {% else %}
+                <span class="flashcard-back">{{ content }}</span>
+                {% endif %}
+            </button>
+        </form>
+    </td>
+    </tr>
+    </tbody>
+</table>
+<table class="flashcard-container-buttons">
+    <tbody>
+    <tr>
+    <td style="text-align: center;">
+        <form method="POST">
+        <button class="flashcard-button"
+            type="submit" name="button_press" value="previous">&#9664;</button>
+        </form>
+    </td>
+    <td style="text-align: center;">
+        <form method="POST">
+            <button class="flashcard-button"
+                type="submit" name="button_press" value="edit">Edit</button>
+        </form>
+    </td>
+    <td style="text-align: center;">
+        <form method="POST">
+        <button class="flashcard-button"
+            type="submit" name="button_press" value="flip">Flip</button>
+        </form>
+    </td>
+    <td style="text-align: center;">
+        <form method="POST">
+        {% if favorite %}
+         <button class="flashcard-button"
+            type="submit" name="button_press" value="unfavorite">Unfavorite</button>
+        {% else %}
+        <button class="flashcard-button"
+            type="submit" name="button_press" value="favorite">Favorite</button>
+        {% endif %}
+        </form>
+    </td>
+    <td style="text-align: center;">
+        <form method="POST">
+            <button class="flashcard-button"
+                type="submit" name="button_press" value="next">&#9654;</button>
+        </form>
+    </td>
+    </tr>
+    </tbody>
+</table>
+</div>
+{% endblock %}

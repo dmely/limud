@@ -1,0 +1,119 @@
+@import "colors.css";
+@import "fonts.css";
+
+.flashcard-container th,
+.flashcard-container tr,
+.flashcard-container td,
+.flashcard-container button,
+.flashcard-container tbody,
+.flashcard-container form {
+    background-color: var(--geombg);
+    border: none;
+    padding: 0px;
+    height: 100%;
+}
+
+.flashcard-container {
+    max-width: 50em;
+    max-height: 30em;
+    width: 45vw;
+    height: 27vw;  /* to preserve the aspect ratio */
+    min-width: 35em;
+    min-height: 21em;
+}
+
+.flashcard-container-progress-bar {
+    border-collapse: collapse;
+    border: none;
+    padding: 0px;
+    width: 100%;
+    height: 3%;
+}
+
+.flashcard-container-progress-bar div {
+    height: 1em;
+    margin: 0px;
+    border: none;
+    padding: 0px;
+    background-color: var(--menu-button-selected);
+    border: none;
+}
+
+.flashcard-container-word {
+    border-collapse: collapse;
+    border: none;
+    padding: 0px;
+    width: 100%;
+    height: 85%;
+}
+
+.flashcard-container-word td,
+.flashcard-container-word form,
+.flashcard-container-word button {
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    border: none;
+}
+
+.flashcard-container-word span {
+    display: inline-block;
+}
+
+.flashcard-container-buttons {
+    table-layout: fixed;
+    border-collapse: collapse;
+    width: 100%;
+    height: 12%;
+}
+
+.flashcard-container-buttons form {
+    height: 100%;
+    border: none;
+    padding: 0px;
+    margin: 0px;
+}
+
+.flashcard-front {
+    font-family: 'Keter YG';
+    font-size: 900%;
+	direction: rtl;
+    text-align: right;
+    color: var(--flashcard-text);
+    padding: 0.25em;
+}
+
+.flashcard-back-hebrew {
+    font-family: 'Keter YG';
+    font-size: 150%;
+	direction: rtl;
+    text-align: right;
+    color: var(--flashcard-text);
+}
+
+.flashcard-back {
+    font-family: 'Crimson Text', 'Keter YG';
+    font-weight: 400;
+    font-size: 35px;
+    color: var(--flashcard-text);
+    padding: 0.5em;
+}
+
+.flashcard-button {
+    background-color: var(--geombg);
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    width: 100%;
+    font-size: 16px;
+    font-family: 'Roboto';
+    font-weight: normal;
+}
+
+.flashcard-button:hover {
+    background-color: var(--menu-button-selected);
+    border: none;
+}

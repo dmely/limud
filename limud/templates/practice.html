@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="centered-container flashcard-container">
+<table class="flashcard-container-progress-bar">
+    <!-- Progress bar is just a div tag -->
+    <tbody><tr><td>
+    <div style="width: {{ progress_percent }}%;" />
+    </td></tr></tbody>
+</table>
+<table class="flashcard-container-word">
+    <tbody>
+    <tr>
+    <td>
+        <form method="POST">
+            <button type="submit" name="button_press" value="flip">
+                <span class="{{ 'flashcard-front' if render_hebrew_large else 'flashcard-back' }}">
+                    <!-- Safe is because we might format Hebrew text in the backend -->
+                    <!-- TODO: Obviously this is horrible, security-wise... -->
+                    {{ content | safe }}
+                </span>
+            </button>
+        </form>
+    </td>
+    </tr>
+    </tbody>
+</table>
+<table class="flashcard-container-buttons">
+    <tbody>
+    <tr>
+    {% if render_reveal_button  %}
+        <td style="text-align: center;">
+            <form method="POST">
+            <button class="flashcard-button"
+                type="submit" name="button_press" value="flip">Reveal</button>
+            </form>
+        </td>
+    {% else %}
+        <td style="text-align: center;">
+            <form method="POST">
+            <button class="flashcard-button"
+                type="submit" name="button_press" value="incorrect">&#10060;</button>
+            </form>
+        </td>
+        {% if render_favorite_button %}
+        <td style="text-align: center;">
+            <form method="POST">
+            {% if favorite == 1 %}
+            <button class="flashcard-button"
+                type="submit" name="button_press" value="unfavorite">Unfavorite</button>
+            {% else %}
+            <button class="flashcard-button"
+                type="submit" name="button_press" value="favorite">Favorite</button>
+            {% endif %}
+            </form>
+        </td>
+        {% endif %}
+        <td style="text-align: center;">
+            <form method="POST">
+                <button class="flashcard-button"
+                type="submit" name="button_press" value="correct">&#9989;</button>
+            </form>
+        </td>
+    {% endif %}
+    </tr>
+    </tbody>
+</table>
+</div>
+{% endblock %}

@@ -1,0 +1,130 @@
+#!/usr/bin/env python
+
+import contextlib
+import secrets
+import socket
+from typing import Optional
+
+import click
+import ipdb
+
+from limud import create_app
+from limud.backend.models.conjugation import ConjugatedVerb
+from limud.backend.models.vocabulary import Word
+from limud.backend.wiktionary import scrape_page_from_wiktionary
+from limud.extensions import database
+
+
+@click.group()
+def cli():
+    pass
+
+
+_insecure_warning = (
+    "WARNING: This mode is very insecure and will serve the app across the "
+    "local network. Please abort and use the 'localhost' option if the "
+    "machine from which you want to connect to the app is also the one "
+    "running the app."
+)
+
+_public_help = (
+    "(EXTREMELY INSECURE) Serve the app on this computer's public IP."
+)
+
+@cli.command("public", help=_public_help)
+@click.option("--port", default="80", help="Port for the app")
+def public(port: int):
+    click.secho(_insecure_warning, fg="red")
+    app = create_app()
+
+    # Print the host's public IP for convenience, assuming the user is
+    # running the client alongside the server.
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.connect(("8.8.8.8", 80))  # Does not have to be reachable
+    ip_address, _ = sock.getsockname()
+    click.secho(f"Server public address: {ip_address}", fg="white")
+
+    # Start the application
+    app.run(host="0.0.0.0", port=port)
+
+
+@cli.command("local", help="Serve the app on localhost.")
+@click.option("--port", default="5001", help="Port for the app")
+def local(port: int):
+    click.secho(f"Serving the app on localhost:{port}", fg="green")
+    app = create_app()
+    app.run(host="127.0.0.1", port=port)
+
+
+@cli.command("genkey", help="Prints out a new secret key for the app.")
+@click.option("--nbytes", default=128, help="Number of bytes in the key")
+def genkey(nbytes: int):
+    click.secho("Please copy-paste the key below:", fg="white")
+    key = secrets.token_urlsafe(nbytes=64)
+    print(f"\n  {key}\n")
+
+
+@cli.group("db", help="Database-related commands. Use with caution.")
+def db():
+    pass
+
+
+@db.command("print", help="Prints out the entire vocabulary.")
+@click.option("--favorites", default=False, is_flag=True, help="Only favorites.")
+def db_print(favorites: bool):
+    """"""
+    click.secho("Printing the database to standard output.", fg="blue")
+    app = create_app()
+    with app.app_context():
+        if favorites:
+            click.secho("Printing favorites only.", fg="white")
+            words = Word.query.filter_by(favorite=True).all()
+        else:
+            click.secho("Printing entire vocabulary.", fg="white")
+            words = Word.query.all()
+
+        for word in words:
+            click.echo(word)
+
+
+@db.command("drop")
+@click.argument("table")
+def db_drop(table: str):
+    """Clear the contents of the database (this is irreversible!)"""
+    prompt = click.style(f"[DANGER] Drop table {table} from DB?", fg="red")
+    
+    if click.confirm(prompt, abort=True):
+        app = create_app()
+
+        with app.app_context():
+            table = database.metadata.tables.get("conjugation")
+            database.session.execute(table.delete())
+            database.session.commit()
+
+        click.secho("Dropped table!", fg="red")
+
+
+@cli.command("wotm", help="Scrapes a random Word Of The Day from Wiktionary.")
+@click.option("--url", default=None, help="If specified, scrape this page.")
+@click.option("--debug/--no-debug", default=True, help="Enable ipdb.")
+def scrape(url: Optional[str], debug: bool):
+    if debug:
+        context = ipdb.launch_ipdb_on_exception()
+    else:
+        context = contextlib.nullcontext()
+
+    with context:
+        for parse in scrape_page_from_wiktionary(url=url, retry=True):
+            parse.prettyprint()
+
+
+@cli.command("routes", help="Prints out the application routes.")
+def routes():
+    """"""
+    click.secho("Printing all application routes.", fg="blue")
+    app = create_app()
+    click.echo(app.url_map)
+
+
+if __name__ == '__main__':
+    cli()

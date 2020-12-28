@@ -1,0 +1,206 @@
+{% extends "layout.html" %}
+{% block body %}
+<script>
+function checkIfNounOrVerb(that) {
+    // Nouns or verbs require specific forms to be displayed
+    // See also: https://stackoverflow.com/a/29321711
+
+    var noun_elements_display_property = "none";
+    var verb_elements_display_property = "none";
+    var adjective_elements_display_property = "none";
+
+    // Undefined occurs before any user input; therefore we need to replace
+    // the value in that.value by a default provided by Flask via the templating
+    // mechanism, if the former is undefined.
+    var category = that.value
+    if (category === undefined) {
+        category = "{{ default_value_category }}";
+        console.log("Setting default value for category: %s", category)
+    }
+
+    // Do not display by default, unless this case is active (switch below)
+    switch (category) {
+        case "noun":
+            noun_elements_display_property = "block";
+            document.getElementById("qal_label").style.display = "none";
+            document.getElementById("description_label").style.display = "block";
+            break;
+        case "verb":
+            verb_elements_display_property = "block";
+            document.getElementById("qal_label").style.display = "block";
+            document.getElementById("description_label").style.display = "none";
+            break;
+        case "adjective":
+            adjective_elements_display_property = "block";
+            document.getElementById("qal_label").style.display = "none";
+            document.getElementById("description_label").style.display = "block";
+            break;
+        default:
+            document.getElementById("qal_label").style.display = "none";
+            document.getElementById("description_label").style.display = "block";
+    }
+
+    // Iterate over all known noun-specific elements and set the correct display property
+    var noun_elements = [
+        "gender_label", "gender_select", "plabs_label", "plabs_input",
+        "sgcst_label", "sgcst_input", "plcst_label", "plcst_input"
+    ];
+
+    for (const element of noun_elements) {
+        document.getElementById(element).style.display = noun_elements_display_property;
+    }
+
+    // Iterate over all known verb-specific elements and set the correct display property
+    var verb_elements = [
+        "nifal_label", "nifal_input", "piel_label", "piel_input", "pual_label",
+        "pual_input", "hifil_label", "hifil_input", "hofal_label", "hofal_input",
+        "hitpael_label", "hitpael_input"
+    ];
+
+    for (const element of verb_elements) {
+        document.getElementById(element).style.display = verb_elements_display_property;
+    }
+
+    // Iterate over all known adjective-specific elements and set the correct display property
+    var adjective_elements = [
+        "pladj_label", "pladj_input", "femadj_label", "femadj_input"
+    ];
+
+    for (const element of adjective_elements) {
+        document.getElementById(element).style.display = adjective_elements_display_property;
+    }
+}
+
+// Trigger the callback on load in order to set the proper style.display
+// for the various elements listed in the callback function body.
+window.onload = () => checkIfNounOrVerb("category_select");
+</script>
+
+<!-- HTML below -->
+<form method="post">
+<div class="edit-form centered-container">
+    <label for="hebrew">Hebrew</label>
+    <input type="text" id="hebrew" name="hebrew" dir="rtl" xml:lang="he" lang="he"
+        value="{{ default_value_hebrew }}"></input>
+
+    <label for="category">Grammatical class</label>
+    <select id="category_select" name="category" id="category" onchange="checkIfNounOrVerb(this);">
+      <option value="noun" 
+          {% if default_value_category == "noun" %} selected {% endif %}>
+          Noun
+      </option>
+      <option value="verb" 
+          {% if default_value_category == "verb" %} selected {% endif %}>
+          Verb
+      </option>
+      <option value="adjective" 
+          {% if default_value_category == "adjective" %} selected {% endif %}>
+          Adjective
+      </option>
+      <option value="adverb" 
+          {% if default_value_category == "adverb" %} selected {% endif %}>
+          Adverb
+      </option>
+      <option value="particle" 
+          {% if default_value_category == "particle" %} selected {% endif %}>
+          Particle
+      </option>
+    </select> 
+
+    <!-- Alternative label for description when verb-->
+    <label id="qal_label" for="description" class="optional">Translation (qal)</label>
+    <label id="description_label" for="description">Translation</label>
+    <input id="description_input" type="text" name="description"
+        value="{{ default_value_description }}"></input>
+
+    <!-- BEGIN VERB-SPECIFIC ELEMENTS -->
+    <label id="nifal_label" for="nifal" class="optional">Translation (nifal)</label>
+    <input id="nifal_input" type="text" name="nifal" value="{{ default_value_nifal }}"></input>
+
+    <label id="piel_label" for="piel" class="optional">Translation (piel)</label>
+    <input id="piel_input" type="text" name="piel" value="{{ default_value_piel }}"></input>
+
+    <label id="pual_label" for="pual" class="optional">Translation (pual)</label>
+    <input id="pual_input" type="text" name="pual" value="{{ default_value_pual }}"></input>
+
+    <label id="hifil_label" for="hifil" class="optional">Translation (hifil)</label>
+    <input id="hifil_input" type="text" name="hifil" value="{{ default_value_hifil }}"></input>
+
+    <label id="hofal_label" for="hofal" class="optional">Translation (hofal)</label>
+    <input id="hofal_input" type="text" name="hofal" value="{{ default_value_hofal }}"></input>
+
+    <label id="hitpael_label" for="hitpael" class="optional">Translation (hitpael)</label>
+    <input id="hitpael_input" type="text" name="hitpael" value="{{ default_value_hitpael }}"></input>
+    <!-- END VERB-SPECIFIC ELEMENTS -->
+
+    <label for="chapter">Chapter (or group)</label>
+    <input type="number" id="chapter" name="chapter" min="1"
+        value="{{ default_value_chapter }}"></input>
+        
+    <!-- BEGIN NOUN-SPECIFIC ELEMENTS -->
+    <label id="gender_label" for="gender" class="optional">Gender</label>
+    <select id="gender_select" name="gender">
+        <option value="" 
+            {% if default_value_gender == "" %} selected {% endif %}>
+            Guess from word ending
+        </option>
+        <option value="masculine" 
+            {% if default_value_gender == "masculine" %} selected {% endif %}>
+            Masculine
+        </option>
+        <option value="feminine" 
+            {% if default_value_gender == "feminine" %} selected {% endif %}>
+            Feminine
+        </option>
+    </select>
+
+    <label id="plabs_label" for="plabs" class="optional">Plural absolute</label>
+    <input id="plabs_input" type="text" name="plabs" dir="rtl" xml:lang="he" lang="he"
+        value="{{ default_value_plabs }}"></input>
+
+    <label id="sgcst_label" for="sgcst" class="optional">Singular construct</label>
+    <input id="sgcst_input" type="text" name="sgcst" dir="rtl" xml:lang="he" lang="he"
+        value="{{ default_value_sgcst }}"></input>
+
+    <label id="plcst_label" for="plcst" class="optional">Plural construct</label>
+    <input id="plcst_input" type="text" name="plcst" dir="rtl" xml:lang="he" lang="he"
+        value="{{ default_value_plcst }}"></input>
+    <!-- END NOUN-SPECIFIC ELEMENTS -->
+
+    <!-- BEGIN ADJECTIVE-SPECIFIC ELEMENTS -->
+    <label id="pladj_label" for="pladj" class="optional">Plural</label>
+    <input id="pladj_input" type="text" name="pladj" dir="rtl" xml:lang="he" lang="he"
+        value="{{ default_value_pladj }}"></input>
+
+    <label id="femadj_label" for="femadj" class="optional">Feminine</label>
+    <input id="femadj_input" type="text" name="femadj" dir="rtl" xml:lang="he" lang="he"
+        value="{{ default_value_femadj }}"></input>
+    <!-- END ADJECTIVE-SPECIFIC ELEMENTS -->
+
+    {% if is_new == 1 %}
+        <br/>
+        <button class="flashcard-button">
+            Add new word to vocabulary
+        </button>
+    {% else %}
+        <br/>
+        <!-- This should not send any value since we assume the form's keys
+             are all table column names. -->
+        <button class="flashcard-button">
+            Update existing word
+        </button>
+        
+        <br/>
+        <!-- Below we need a name fields to distinguish the two button presses -->
+        <button class="flashcard-button" name="delete_button_press" onclick="confirmDelete()">
+            Delete word from vocabulary
+            <script>
+            function confirmDelete() {
+              confirm("Are you sure you want to delete this word? THIS OPERATION CANNOT BE UNDONE.");
+            }
+            </script>          
+        </button>
+    {% endif %}
+</div>
+</form>
+{% endblock %}
