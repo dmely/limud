@@ -1,0 +1,15 @@
+@font-face {
+	font-family: 'Keter YG';
+	src: url('KeterYG-Medium.ttf') format('truetype'),
+}
+
+:lang(he) {
+    direction: rtl;
+    font-family:'Keter YG', serif;
+    color: white;
+}
+
+body {
+    font-size: 300%;
+    background-color: rgb(82, 82, 82);
+}

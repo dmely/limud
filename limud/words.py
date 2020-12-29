@@ -25,14 +25,19 @@ class Word:
     def __init__(self,
                  text: str,
                  description: str,
-                 kind: WordType = WordType.OTHER):
+                 kind: WordType = WordType.OTHER,
+                 from_chapter: int = -1):
 
         self.text = text
         self.description = description
         self.kind = kind
+        self.from_chapter = from_chapter
 
         if kind == WordType.OTHER:
             LOG.warn("Input word %s without a word type!", text)
+
+        if from_chapter == -1:
+            LOG.warn("Input word %s does not have a source chapter!", text)
 
     def render(self):
         return render_hebrew_text(self.text)

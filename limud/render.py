@@ -1,12 +1,13 @@
 import pathlib
 
-from bidi.algorithm import get_display
+# from bidi.algorithm import get_display
 import PIL.Image
 import PIL.ImageDraw
 import PIL.ImageFont
 
 # Rendering parameters
-FONT_PATH = pathlib.Path.cwd() / "KeterYG-Medium.ttf"
+ASSETS_ROOT = pathlib.Path.cwd() / "static"
+FONT_PATH = ASSETS_ROOT / "KeterYG-Medium.ttf"
 DEFAULT_HEIGHT = 500
 DEFAULT_WIDTH = 1000
 DEFAULT_TEXT_POSITION = (DEFAULT_WIDTH // 4, DEFAULT_HEIGHT // 4)
