@@ -3,8 +3,6 @@ import logging
 from typing import Optional
 from typing import Union
 
-from .render import render_hebrew_text
-
 LOG = logging.getLogger(__name__)
 QAMATS_HE_BYTES = b'\xd6\xb8\xd7\x94'
 
@@ -38,9 +36,6 @@ class Word:
 
         if from_chapter == -1:
             LOG.warn("Input word %s does not have a source chapter!", text)
-
-    def render(self):
-        return render_hebrew_text(self.text)
 
 
 class Adjective(Word):

@@ -3,11 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}" />
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" />
     <title>Biblical Hebrew flashcards</title>
 </head>
 <body>
-    Hebrew word: <span xml:lang="he" lang="he">{{ word }}</span>.
-    <br />
-    Hello, word -- <span xml:lang="he" lang="he">שָׁלוֺם עוֺלָם</span>.
+<div class="centered">
+<table style="border-collapse: collapse; width: 100%;" border="1">
+    <tbody>
+    <tr>
+    <td style="width: 90%; text-align: center;">
+    {% if obverse %}
+    <span xml:lang="he" lang="he" class="flashcard-word">{{ word }}</span>
+    {% else %}
+    <span xml:lang="he" lang="he">{{ word }}</span>
+    {% endif %}
+    </td>
+    </tr>
+    </tbody>
+</table>
+<table style="border-collapse: collapse; width: 100%;" border="1">
+    <tbody>
+    <tr>
+    <td style="text-align: center;">
+        <button class="flashcard-button">&#9664;</button>
+    </td>
+    <td style="text-align: center;">
+        <button class="flashcard-button">Add</button>
+    </td>
+    <td style="text-align: center;">
+        <button class="flashcard-button">Flip</button>
+    </td>
+    <td style="text-align: center;">
+        <button class="flashcard-button">Edit</button>
+    </td>
+    <td style="text-align: center;">
+        <button class="flashcard-button">Delete</button>
+    </td>
+    <td style="text-align: center;">
+        <button class="flashcard-button">&#9654;</button>
+    </td>
+    </tr>
+    </tbody>
+</table>
+</div>
 </body>
-</html>  
+</html>
