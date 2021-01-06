@@ -8,18 +8,25 @@ from limud.words import Word
 welcome = Blueprint(
     "welcome", __name__,
     template_folder="templates",
-    static_folder="static"
-)
+    static_folder="static")
 
 flashcard = Blueprint(
     "flashcard", __name__,
     template_folder="templates",
-    static_folder="static"
-)
+    static_folder="static")
+
+edit = Blueprint(
+    "edit", __name__,
+    template_folder="templates",
+    static_folder="static")
 
 @welcome.route("/")
 def root():
     return render_template("welcome.html")
+
+@edit.route("/edit/")
+def form():
+    return render_template("edit.html")
 
 @flashcard.route("/render/")
 @flashcard.route("/render/<word>")

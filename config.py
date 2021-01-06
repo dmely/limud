@@ -9,4 +9,5 @@ class Config:
 
     SECRET_KEY = "dev"
     FLASK_ENV = "development"
-    VOCABULARY_DB = _appdir / "vocabulary.sqlite"
+    SCHEMA_DB = _appdir / "schema.sql"
+    VOCABULARY_DB = _basedir / "vocabulary.sqlite"

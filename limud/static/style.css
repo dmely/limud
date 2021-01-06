@@ -1,10 +1,31 @@
 @font-face {
-    font-family: 'Keter YG';
-	src: url('KeterYG-Medium.ttf') format('truetype'),
+    font-family: 'Keter YG', serif;
+	src: url('KeterYG-Medium.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'FiraGO', serif;
+    src: url('FiraGO-Hair.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Roboto', sans-serif;
+    src: url('Roboto-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Roboto', sans-serif;
+    src: url('Roboto-Medium.ttf') format('truetype');
+    font-weight: medium;
+    font-style: medium;
 }
 
 :lang(he) {
-    font-family: 'Keter YG';
+    font-family: 'FiraGO';
+    font-size: 150%;
+    font-weight: 100;
 	direction: rtl;
     text-align: right;
     color: white;
@@ -34,6 +55,8 @@
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
+    font-family: 'Roboto';
+    font-weight: normal;
 }
 
 table, th, tr, td {
@@ -41,6 +64,43 @@ table, th, tr, td {
     border: none;
 }
 
+/* See also: https://stackoverflow.com/a/48386400 */
+.settings {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: auto auto;
+    justify-content: center;
+}
+
+.settings label {
+    color: white;
+    border: none;
+    font-family: 'Roboto';
+    font-weight: 500;
+    font-size: 22px;
+    text-align: right;
+    margin: 8px 0;
+}
+
+.settings input, .settings select {
+    width: 500px;
+    background-color: #333333;
+    color: white;
+    border: none;
+    font-family: 'Roboto';
+    font-weight: normal;
+    font-size: 16px;
+}
+
+.settings input:lang(he) {
+    font-family: 'FiraGO';
+    font-size: 150%;
+}
+
 body {
     background-color: rgb(82, 82, 82);
+    color: white;
+    font-size: 16px;
+    font-family: 'Roboto';
+    font-weight: normal;
 }
