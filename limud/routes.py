@@ -1,5 +1,9 @@
 from flask import current_app as app
+from flask import flash
+from flask import redirect
 from flask import render_template
+from flask import request
+from flask import url_for
 from flask import Blueprint
 
 from limud.words import Word
@@ -21,12 +25,17 @@ edit = Blueprint(
     static_folder="static")
 
 @welcome.route("/")
-def root():
+def index():
     return render_template("welcome.html")
 
-@edit.route("/edit/")
+@edit.route("/edit/", methods=["GET", "POST"])
 def form():
-    return render_template("edit.html")
+    if request.method == "GET":
+        return render_template("edit.html")
+
+    if request.method == "POST":
+        app.logger.debug(f"Submitted word: {request.form}")
+        return redirect(url_for("welcome.index"))
 
 @flashcard.route("/render/")
 @flashcard.route("/render/<word>")
@@ -36,5 +45,3 @@ def render(word=None, obverse=True):
         word = text.decode("utf-8")
 
     return render_template("flashcard.html", word=word, obverse=obverse)
-
-

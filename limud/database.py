@@ -1,4 +1,5 @@
 import sqlite3
+from typing import Optional
 
 import click
 from flask import Flask
@@ -14,7 +15,15 @@ def init_db():
         db.executescript(f.read().decode("utf8"))
 
 
-def get_db():
+def dump_db(favorites: bool):
+    db = get_db()
+    cursor = db.cursor()
+    query = f"SELECT * FROM {'favorites' if favorites else 'vocabulary'}"
+    cursor.execute(query)
+    cursor.fetchall()
+
+
+def get_db() -> sqlite3.Connection:
     if "db" not in g:
         g.db = sqlite3.connect(
             current_app.config["VOCABULARY_DB"],
@@ -23,7 +32,7 @@ def get_db():
     return g.db
 
 
-def close_db(e=None):
+def close_db(e: Optional[Exception] = None):
     db = g.pop("db", None)
     if db is not None:
         db.close()
@@ -36,7 +45,19 @@ def init_db_command():
     """Clear the existing data and create new tables.
     """
     init_db()
-    click.echo(click.style("Initialized the database.", fg="blue"))
+    click.secho("Initialized the database.", fg="blue")
+
+
+@click.command("dump-db")
+@click.option("--favorites", default=False, is_flag=True, help="Only show favorites.")
+@with_appcontext
+def dump_db_command(favorites: bool):
+    """Print out the entire vocabulary dataset to standard output.
+    """
+    click.secho("Dumping the database to STDOUT.", fg="blue")
+    click.secho("Printing favorites only." if favorites else
+               "Printing entire vocabulary.", fg="white")
+    dump_db(favorites)
 
 
 # Configures the app; needs to be called in the factory
@@ -47,5 +68,6 @@ def initialize_database(app: Flask):
     # Clean-up connection to database when exiting
     app.teardown_appcontext(close_db)
 
-    # Enable 'flask init-db'
+    # Enable 'flask <verb>'
     app.cli.add_command(init_db_command)
+    app.cli.add_command(dump_db_command)
