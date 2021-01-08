@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='hoverbutton.css') }}" />
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" />
     <title>Biblical Hebrew flashcards</title>
 </head>
@@ -13,9 +14,9 @@
     <tr>
     <td style="width: 90%; text-align: center;">
     {% if obverse %}
-    <span xml:lang="he" lang="he" class="flashcard-word">{{ word }}</span>
+    <span xml:lang="he" lang="he" class="flashcard-word">{{ display_text }}</span>
     {% else %}
-    <span xml:lang="he" lang="he">{{ word }}</span>
+    <span xml:lang="he" lang="he">{{ display_text }}</span>
     {% endif %}
     </td>
     </tr>
@@ -38,6 +39,14 @@
     </td>
     <td style="text-align: center;">
         <button class="flashcard-button">Delete</button>
+    </td>
+    <td style="text-align: center;">
+        <div id="ck-button">
+            <label>
+            <input type="checkbox" id="favorite" name="favorite">
+            <span>Favorite</span>
+            </label>
+         </div>
     </td>
     <td style="text-align: center;">
         <button class="flashcard-button">&#9654;</button>

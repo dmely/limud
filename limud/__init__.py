@@ -1,9 +1,10 @@
 from flask import Flask
 
-from .database import initialize_database
+from .commands import register_commands
 from .routes import edit
 from .routes import flashcard
 from .routes import welcome
+from .models import database
 
 
 def create_app():
@@ -18,7 +19,11 @@ def create_app():
     app.register_blueprint(edit)
     app.register_blueprint(flashcard)
     app.register_blueprint(welcome)
-    initialize_database(app)
+
+    register_commands(app)
+    database.init_app(app)
+
+    with app.app_context():
+        database.create_all()
 
     return app
-

@@ -6,27 +6,32 @@ from flask import request
 from flask import url_for
 from flask import Blueprint
 
-from limud.words import Word
-
+from .models import Word
+from .models import create_word_from_form_dict
+from .models import database
 
 welcome = Blueprint(
     "welcome", __name__,
     template_folder="templates",
     static_folder="static")
 
+
 flashcard = Blueprint(
     "flashcard", __name__,
     template_folder="templates",
     static_folder="static")
+
 
 edit = Blueprint(
     "edit", __name__,
     template_folder="templates",
     static_folder="static")
 
+
 @welcome.route("/")
 def index():
     return render_template("welcome.html")
+
 
 @edit.route("/edit/", methods=["GET", "POST"])
 def form():
@@ -34,14 +39,28 @@ def form():
         return render_template("edit.html")
 
     if request.method == "POST":
-        app.logger.debug(f"Submitted word: {request.form}")
+        app.logger.debug(f"Submitted fields: {request.form}")
+        
+        word = create_word_from_form_dict(**request.form)
+        database.session.add(word)
+        database.session.commit()
+        
+        app.logger.info("Added word: %s to database", word)
+
         return redirect(url_for("welcome.index"))
 
-@flashcard.route("/render/")
-@flashcard.route("/render/<word>")
-def render(word=None, obverse=True):
-    if word is None:
-        text = b'\xd7\x90\xd6\xb8\xd7\x9e\xd6\xb7\xd7\xa8'
-        word = text.decode("utf-8")
 
-    return render_template("flashcard.html", word=word, obverse=obverse)
+@flashcard.route("/flashcard/")
+@flashcard.route("/flashcard/<word_id>")
+def display(word_id=None, obverse=True):
+    if word_id is None:
+        word_id = 1
+
+    # Retrieve word from database
+    word = Word.query.get(word_id)
+    app.logger.info("Retrieved word: %s from database", word)
+
+    return render_template(
+        "flashcard.html",
+        display_text=word.hebrew,
+        obverse=obverse)
