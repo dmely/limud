@@ -3,7 +3,7 @@ from flask import Flask
 from .commands import register_commands
 from .routes import edit
 from .routes import flashcard
-from .routes import welcome
+from .routes import home
 from .models import database
 
 
@@ -18,7 +18,7 @@ def create_app():
     app.config.from_object("config.Config")
     app.register_blueprint(edit)
     app.register_blueprint(flashcard)
-    app.register_blueprint(welcome)
+    app.register_blueprint(home)
 
     register_commands(app)
     database.init_app(app)

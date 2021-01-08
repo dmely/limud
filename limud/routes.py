@@ -10,8 +10,9 @@ from .models import Word
 from .models import create_word_from_form_dict
 from .models import database
 
-welcome = Blueprint(
-    "welcome", __name__,
+
+home = Blueprint(
+    "home", __name__,
     template_folder="templates",
     static_folder="static")
 
@@ -28,9 +29,9 @@ edit = Blueprint(
     static_folder="static")
 
 
-@welcome.route("/")
+@home.route("/")
 def index():
-    return render_template("welcome.html")
+    return render_template("index.html")
 
 
 @edit.route("/edit/", methods=["GET", "POST"])
@@ -47,7 +48,7 @@ def form():
         
         app.logger.info("Added word: %s to database", word)
 
-        return redirect(url_for("welcome.index"))
+        return redirect(url_for("home.index"))
 
 
 @flashcard.route("/flashcard/")

@@ -1,14 +1,7 @@
-<!doctype html>
-<html>
-    <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}" />
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" />
-    <title>Biblical Hebrew flashcards</title>
-</head>
-<body>
+{% extends "layout.html" %}
+{% block body %}
 <form method="post">
-<div class="settings centered">
+<div class="edit-form centered">
     <label for="hebrew">Hebrew</label>
     <input type="text" id="hebrew" name="hebrew" dir="rtl" xml:lang="he" lang="he"/>
     
@@ -46,5 +39,4 @@
     <button class="flashcard-button">Add to vocabulary</button>
 </div>
 </form>
-</body>
-</html>
+{% endblock %}

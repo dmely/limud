@@ -1,13 +1,5 @@
-<!doctype html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}" />
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='hoverbutton.css') }}" />
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" />
-    <title>Biblical Hebrew flashcards</title>
-</head>
-<body>
+{% extends "layout.html" %}
+{% block body %}
 <div class="centered">
 <table style="border-collapse: collapse; width: 100%;" border="1">
     <tbody>
@@ -27,9 +19,6 @@
     <tr>
     <td style="text-align: center;">
         <button class="flashcard-button">&#9664;</button>
-    </td>
-    <td style="text-align: center;">
-        <button class="flashcard-button">Add</button>
     </td>
     <td style="text-align: center;">
         <button class="flashcard-button">Flip</button>
@@ -55,5 +44,4 @@
     </tbody>
 </table>
 </div>
-</body>
-</html>
+{% endblock %}

@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}" />
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <title>Biblical Hebrew flashcards</title>
+    
+    <!-- Display dropdown contextual menu -->
+    <div class="dropdown">
+        <button class="dropbtn">Menu</button>
+        <div class="dropdown-content">
+            <a href="{{ url_for('home.index') }}">Home</a>
+            <a href="{{ url_for('edit.form') }}">Add flashcard</a>
+            <a href="{{ url_for('flashcard.display') }}">Review flashcards</a>
+        </div>
+    </div> 
+</head>
+<body>
+{% block body %}
+{% endblock %}
+</body>
+</html>  

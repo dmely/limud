@@ -1,17 +1,17 @@
 /* See: https://stackoverflow.com/a/7642302 */
 
-@import "style.css";
+@import "colors.css";
 
 #ck-button {
     background-color: var(--geombg);
-    color: #a0a0a0;
+    color: var(--dimtext);
     border: none;
     overflow: visible;
     float: left;
 }
 
 #ck-button:hover {
-    background: #3b3b3b;
+    background: var(--hover);
 }
 
 #ck-button label {
@@ -30,6 +30,6 @@
 }
 
 #ck-button input:checked + span {
-    background-color: #2b2b2b2b;
+    background-color: var(--geombg);
     color: white;
 }
