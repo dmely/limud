@@ -65,47 +65,54 @@ def display_run():
     in flask.session before accessing this route.
     """
     
-    # Retrieve current list of words and then current word
+    # Retrieve current application state:
+    # - the list of words being displayed
+    # - the current index relative to current list of words (or 'run')
+    # - the side of the flashcard being shown (0 = front, 1 = back)
     try:
         word_ids = session["word_ids"]
     except KeyError:
-        app.logger.error("Invalid route: No 'words' found in flask.session!")
+        app.logger.error("Invalid route: No 'word_ids' found in flask.session!")
         raise
-
-    # Retrieve index relative to current list of words (or 'run')
-    index = request.args.get("index", None)
-    index = 0 if index is None else int(index)
-    app.logger.debug("Using index %i", index)
+    else:
+        if not word_ids:
+            raise RuntimeError("Invalid: cached word list is empty!")
+        app.logger.debug("Retrieved %i words from cache.", len(word_ids))
     
-    # Process button clicks
+    index = session.setdefault("index", 0)
+    side = session.setdefault("side", 0)
+
+    # Now we process any button clicks (always HTTP POST requests)
     if request.method == "POST":
         if request.form["button_press"] == "flip":
-            session["side"] = 1 - session["side"]
+            app.logger.debug("Received request to flip")
+            side = 1 - side
         
         if request.form["button_press"] == "previous":
+            app.logger.debug("Received request for previous")
             index = (index - 1) % len(word_ids)
 
         if request.form["button_press"] == "next":
+            app.logger.debug("Received request for next")
             index = (index + 1) % len(word_ids)
 
     word = Word.query.get(word_ids[index])
     app.logger.info("Retrieved word: %s from database", word)
 
-    # Show front or back of the flashcard? 0 = front, 1 = back
-    if "side" not in session:
-        session["side"] = 0
-
-    if session["side"] == 0:
+    if side == 0:
         content = word.hebrew
-    elif session["side"] == 1:
+        app.logger.debug("Showing front of flashcard")
+    elif side == 1:
         content = word.description
+        app.logger.debug("Showing back of flashcard ")
     else:
         raise ValueError("Invalid value for session variable 'side'!")
 
-    return render_template(
-        "flashcards.html",
-        content=content,
-        side=session["side"])
+    # Update state before leaving function
+    session["index"] = index
+    session["side"] = side
+
+    return render_template("flashcards.html", content=content, side=side)
 
 
 @flashcards.route("/flashcards/all")
@@ -120,9 +127,12 @@ def display_all():
     if request.args.get("shuffle", False):
         random.shuffle(word_ids)
 
+    # Set word list and reset other state
     session["word_ids"] = word_ids
+    session["index"] = 0
+    session["side"] = 0
 
-    return redirect(url_for(".display_run", index=0))
+    return redirect(url_for(".display_run"))
 
 
 @flashcards.route("/flashcards/favorites")
@@ -137,9 +147,12 @@ def display_all_favorites():
     if request.args.get("shuffle", False):
         random.shuffle(word_ids)
 
+    # Set word list and reset other state
     session["word_ids"] = word_ids
+    session["index"] = 0
+    session["side"] = 0
 
-    return redirect(url_for(".display_run", index=0))
+    return redirect(url_for(".display_run"))
 
 
 @flashcards.route("/flashcards/chapter/<chapter_id>")
@@ -155,9 +168,12 @@ def display_by_chapter(chapter_id: int):
     if request.args.get("shuffle", False):
         random.shuffle(word_ids)
 
+    # Set word list and reset other state
     session["word_ids"] = word_ids
+    session["index"] = 0
+    session["side"] = 0
 
-    return redirect(url_for(".display_run", index=0))
+    return redirect(url_for(".display_run"))
     
 
 # @flashcards.route("/flashcards/word/<word_id>")
