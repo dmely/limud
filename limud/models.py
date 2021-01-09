@@ -140,7 +140,7 @@ class Word(database.Model):
     }
 
     def __repr__(self):
-        return "<Word {} (id: {})>".format(self.hebrew, self.id)
+        return f"<Word {self.hebrew} (id: {self.id}, ch: {self.chapter})>"
 
 
 class Noun(Word):

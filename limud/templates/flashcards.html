@@ -5,10 +5,10 @@
     <tbody>
     <tr>
     <td style="width: 90%; text-align: center;">
-    {% if obverse %}
-    <span xml:lang="he" lang="he" class="flashcard-word">{{ display_text }}</span>
+    {% if side == 0 %}
+    <span xml:lang="he" lang="he" class="flashcard-word">{{ content }}</span>
     {% else %}
-    <span xml:lang="he" lang="he">{{ display_text }}</span>
+    <span xml:lang="he" lang="he">{{ content }}</span>
     {% endif %}
     </td>
     </tr>
@@ -18,19 +18,19 @@
     <tbody>
     <tr>
     <td style="text-align: center;">
-        <button class="flashcard-button">&#9664;</button>
-    </td>
-    <td style="text-align: center;">
-        <button class="flashcard-button">Randomize</button>
-    </td>
-    <td style="text-align: center;">
-        <button class="flashcard-button">Flip</button>
+        <form method="POST">
+        <button class="flashcard-button"
+            type="submit" name="button_press" value="previous">&#9664;</button>
+        </form>
     </td>
     <td style="text-align: center;">
         <button class="flashcard-button">Edit</button>
     </td>
     <td style="text-align: center;">
-        <button class="flashcard-button">Delete</button>
+        <form method="POST">
+        <button class="flashcard-button"
+            type="submit" name="button_press" value="flip">Flip</button>
+        </form>
     </td>
     <td style="text-align: center;">
         <div id="ck-button">
@@ -41,7 +41,10 @@
          </div>
     </td>
     <td style="text-align: center;">
-        <button class="flashcard-button">&#9654;</button>
+        <form method="POST">
+            <button class="flashcard-button"
+                type="submit" name="button_press" value="next">&#9654;</button>
+        </form>
     </td>
     </tr>
     </tbody>

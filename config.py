@@ -11,6 +11,7 @@ class Config:
     # General application settings
     SECRET_KEY = "dev"
     FLASK_ENV = "development"
+    RANDOM_SEED = 0
 
     # Database settings
     SQLALCHEMY_DATABASE_URI = "sqlite:///" + str(_basedir / _dbname)
