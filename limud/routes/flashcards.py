@@ -9,6 +9,7 @@ from flask import url_for
 from flask import Blueprint
 
 from ..models import Word
+from ..models import database
 
 
 flashcards = Blueprint(
@@ -27,7 +28,7 @@ def display_run():
     Thus: to display any series of words, ensure that list of IDs is
     in flask.session before accessing this route.
     """
-    
+
     # Retrieve current application state:
     # - the list of words being displayed
     # - the current index relative to current list of words (or 'run')
@@ -60,7 +61,7 @@ def display_run():
         if request.form["button_press"] == "flip":
             app.logger.debug("Received request to flip")
             side = 1 - side
-        
+
         if request.form["button_press"] == "previous":
             app.logger.debug("Received request for previous")
             index = (index - 1) % len(word_ids)
@@ -71,7 +72,7 @@ def display_run():
 
     word = Word.query.get(word_ids[index])
     app.logger.info("Retrieved word: %s from database", word)
-
+        
     if side == 0:
         content = word.hebrew
         app.logger.debug("Showing front of flashcard")
@@ -81,16 +82,36 @@ def display_run():
     else:
         raise ValueError("Invalid value for session variable 'side'!")
 
+    # Look at these requests at the end since we need to load the word first
+    if request.method == "POST":
+        if request.form["button_press"] == "favorite":
+            app.logger.debug("Received request to favorite")
+            word.favorite = True
+            database.session.commit()
+
+        if request.form["button_press"] == "unfavorite":
+            app.logger.debug("Received request to unfavorite")
+            word.favorite = False
+            database.session.commit()
+
+        if request.form["button_press"] == "edit":
+            app.logger.debug("Received request to edit word %s", word)
+            return redirect(url_for("edit.existing_word", word_id=word.id))
+
     # Update state before leaving function
     session["index"] = index
     session["side"] = side
 
-    return render_template("flashcards.html", content=content, side=side)
+    return render_template("flashcards.html",
+        content=content, side=side, favorite=int(word.favorite))
 
 
 @flashcards.route("/flashcards/all")
 def display_all():
-    """Displays every word."""
+    """Displays every word.
+    
+    Randomize by default.
+    """
 
     words = Word.query.all()
     word_ids = [word.id for word in words]
@@ -112,6 +133,8 @@ def display_all():
 @flashcards.route("/flashcards/favorites")
 def display_all_favorites():
     """Displays all favorited words.
+
+    Randomize by default.
     """
     words = Word.query.filter_by(favorite=True).all()
     word_ids = [word.id for word in words]
@@ -135,6 +158,8 @@ def display_all_favorites():
 def display_by_chapter(chapter_id: str):
     """Fetches all words from a chapter, shuffles them, and displays
     them.
+
+    Randomize by default.
     """
     chapter_id = int(chapter_id)
     words = Word.query.filter_by(chapter=chapter_id).all()

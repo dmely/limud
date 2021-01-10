@@ -24,7 +24,10 @@
         </form>
     </td>
     <td style="text-align: center;">
-        <button class="flashcard-button">Edit</button>
+        <form method="POST">
+            <button class="flashcard-button"
+                type="submit" name="button_press" value="edit">Edit</button>
+        </form>
     </td>
     <td style="text-align: center;">
         <form method="POST">
@@ -33,12 +36,15 @@
         </form>
     </td>
     <td style="text-align: center;">
-        <div id="ck-button">
-            <label>
-            <input type="checkbox" id="favorite" name="favorite">
-            <span>Favorite</span>
-            </label>
-         </div>
+        <form method="POST">
+         {% if favorite == 1 %}
+         <button class="flashcard-button"
+            type="submit" name="button_press" value="unfavorite">Unfavorite</button>
+        {% else %}
+        <button class="flashcard-button"
+            type="submit" name="button_press" value="favorite">Favorite</button>
+        {% endif %}
+        </form>
     </td>
     <td style="text-align: center;">
         <form method="POST">

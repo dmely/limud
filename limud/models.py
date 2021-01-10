@@ -14,70 +14,6 @@ database = SQLAlchemy()
 QAMATS_HE_BYTES = b'\xd6\xb8\xd7\x94'
 
 
-def create_word_from_form_dict(*, 
-                               hebrew: str,
-                               description: str,
-                               category: str,
-                               chapter: int,
-                               gender: Optional[str],
-                               plabs: Optional[str],
-                               sgcst: Optional[str],
-                               plcst: Optional[str]):
-    """Polymorphic constructor for a Word, based on a request's form.
-
-    Creates the appropriate subtype of Word based on the value of the
-    'category' enum, and performs various checks on the input fields.
-
-    Parameters
-    ----------
-    See the documentation for Word.
-
-    Returns
-    -------
-    Noun | Verb | Adjective | Adverb
-    """
-    category = GrammaticalCategory(category)
-    
-    if category is GrammaticalCategory.NOUN:
-        return Noun(
-            hebrew=hebrew,
-            description=description,
-            category=category,
-            chapter=int(chapter),
-            favorite=False,
-            gender=NounGender(gender),
-            plabs=plabs,
-            sgcst=sgcst,
-            plcst=plcst,
-        )
-    elif category is GrammaticalCategory.VERB:
-        return Verb(
-            hebrew=hebrew,
-            description=description,
-            category=category,
-            chapter=int(chapter),
-            favorite=False,
-        )
-    elif category is GrammaticalCategory.ADJECTIVE:
-        return Adjective(
-            hebrew=hebrew,
-            description=description,
-            category=category,
-            chapter=int(chapter),
-            favorite=False,
-        )
-    elif category is GrammaticalCategory.ADVERB:
-        return Adverb(
-            hebrew=hebrew,
-            description=description,
-            category=category,
-            chapter=int(chapter),
-            favorite=False,
-        )
-    else:
-        raise TypeError
-
-
 @enum.unique
 class GrammaticalCategory(enum.Enum):
     """Grammatical category, or class, of a word in Hebrew.
@@ -101,6 +37,18 @@ class NounGender(enum.Enum):
     """
     MASCULINE = "masculine"
     FEMININE = "feminine"
+
+    @staticmethod
+    def infer_from_word(text):
+        """Infers the gender of a noun based on the presence of a
+        qamats-he ending (in which case the feminine is assumed).
+
+        Obviously, this does not account for exceptions (such as the
+        word for 'father').
+        """
+        if text.encode("utf-8").endswith(QAMATS_HE_BYTES):
+            return NounGender.FEMININE
+        return NounGender.MASCULINE
 
 
 class Word(database.Model):
@@ -140,11 +88,16 @@ class Word(database.Model):
     }
 
     def __repr__(self):
-        return f"<Word {self.hebrew} (id: {self.id}, ch: {self.chapter})>"
+        return (
+            f"<Word {self.hebrew} | "
+            f"id: {self.id}, "
+            f"ch: {self.chapter}, "
+            f"cat: {self.category}, "
+            f"fav: {'yes' if self.favorite else 'no'}>")
 
 
 class Noun(Word):
-    gender = Column(Enum(NounGender), nullable=True, default=None)
+    gender = Column(Enum(NounGender))
     plabs = Column(String)
     sgcst = Column(String)
     plcst = Column(String)
@@ -153,24 +106,15 @@ class Noun(Word):
         "polymorphic_identity": GrammaticalCategory.NOUN,
     }
 
-    def __init__(self, **kwargs):
-        gender = kwargs.pop("gender", None)
-        if gender is None:
-            kwargs["gender"] = self.infer_gender(kwargs["text"])
+    def __repr__(self):
+        return (
+            f"<Word {self.hebrew} | "
+            f"id: {self.id}, "
+            f"ch: {self.chapter}, "
+            f"cat: {self.category}, "
+            f"gdr: {self.gender}, "
+            f"fav: {'yes' if self.favorite else 'no'}>")
 
-        super().__init__(**kwargs)
-
-    @staticmethod
-    def infer_gender(text):
-        """Infers the gender of a noun based on the presence of a
-        qamats-he ending (in which case the feminine is assumed).
-
-        Obviously, this does not account for exceptions (such as the
-        word for 'father').
-        """
-        if text.encode("utf-8").endswith(QAMATS_HE_BYTES):
-            return NounGender.FEMININE
-        return NounGender.MASCULINE
 
 
 class Verb(Word):
@@ -189,3 +133,112 @@ class Adverb(Word):
     __mapper_args__ = {
         "polymorphic_identity": GrammaticalCategory.ADVERB,
     }
+
+
+def create_word_from_form_dict(*,
+                               hebrew: str,
+                               description: str,
+                               category: str,
+                               chapter: str,
+                               gender: Optional[str],
+                               plabs: Optional[str],
+                               sgcst: Optional[str],
+                               plcst: Optional[str]):
+    """Polymorphic constructor for a Word, based on a request's form.
+
+    Creates the appropriate subtype of Word based on the value of the
+    'category' enum, and performs various checks on the input fields.
+
+    Important: This merely creates a Python object, it does not change
+    the state of the database (e.g., it does not add and commit to the
+    database). The parent caller is responsible for any calls to the 
+    database API. 
+
+    Parameters
+    ----------
+    See the documentation for Word. Note inputs to this function are
+    all strings and need to be cast to the appropriate type.
+
+    Returns
+    -------
+    Noun | Verb | Adjective | Adverb
+    """
+    category = GrammaticalCategory(category)
+    
+    if category is GrammaticalCategory.NOUN:
+        if not gender:
+            gender = NounGender.infer_from_word(hebrew)
+
+        return Noun(
+            hebrew=hebrew,
+            description=description,
+            category=category,
+            chapter=int(chapter),
+            favorite=False,
+            gender=gender,
+            plabs=plabs,
+            sgcst=sgcst,
+            plcst=plcst,
+        )
+    elif category is GrammaticalCategory.VERB:
+        return Verb(
+            hebrew=hebrew,
+            description=description,
+            category=category,
+            chapter=int(chapter),
+            favorite=False,
+        )
+    elif category is GrammaticalCategory.ADJECTIVE:
+        return Adjective(
+            hebrew=hebrew,
+            description=description,
+            category=category,
+            chapter=int(chapter),
+            favorite=False,
+        )
+    elif category is GrammaticalCategory.ADVERB:
+        return Adverb(
+            hebrew=hebrew,
+            description=description,
+            category=category,
+            chapter=int(chapter),
+            favorite=False,
+        )
+    else:
+        raise TypeError
+
+
+def update_word_from_form_dict(word: Word,
+                               hebrew: str,
+                               description: str,
+                               category: str,
+                               chapter: str,
+                               gender: Optional[str],
+                               plabs: Optional[str],
+                               sgcst: Optional[str],
+                               plcst: Optional[str]):
+    """Updates an existing Word, based on a request's form.
+
+    Important: this merely updates the Python object, it does not
+    affect the database state (e.g., it does not call commit() or
+    flush() on the database). The parent caller is responsible for
+    any calls to the  database API.
+
+    Parameters
+    ----------
+    See the documentation for Word. Note inputs to this function are
+    all strings and need to be cast to the appropriate type.
+    """
+    word.hebrew = hebrew
+    word.description = description
+    word.category = GrammaticalCategory(category)
+    word.chapter = int(chapter)
+
+    if word.category is GrammaticalCategory.NOUN:
+        if not gender:
+            gender = NounGender.infer_from_word(hebrew)
+
+        word.gender = gender
+        word.plabs = plabs
+        word.sgcst = sgcst
+        word.plcst = plcst
