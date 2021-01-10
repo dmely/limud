@@ -34,4 +34,6 @@ def create_app():
     with app.app_context():
         database.create_all()
 
+        from . import context_processors
+
     return app

@@ -1,8 +1,11 @@
 :root {
     --bodybg: #525252;
     --geombg: #2b2b2b;
-    --hover: #3b3b3b;
     --fgtext: white;
-    --dimtext: #a0a0a0;
+    --menu-button-selected: #3b3b3b;
+    --submenu-button-selected: #adadad;
+    --menu-contents-highlighted: #dddddd;
+    --menu-contents-background: white;
+    /* --dimtext: #a0a0a0; */
     --splashtext: #696969;
 }

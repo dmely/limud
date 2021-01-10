@@ -8,11 +8,33 @@
     
     <!-- Display dropdown contextual menu -->
     <div class="dropdown">
-        <button class="dropbtn">Menu</button>
+        <button class="dropbtn-main" id="main-menu">Menu</button>
         <div class="dropdown-content">
             <a href="{{ url_for('home.index') }}">Home</a>
             <a href="{{ url_for('edit.new_word') }}">Add flashcard</a>
-            <a href="{{ url_for('flashcards.display_all') }}">Review flashcards</a>
+            <div class="dropdown">
+                <button class="dropbtn">Review flashcards</button>
+                <div class="dropdown-content">
+                    <a href="{{ url_for('flashcards.display_all') }}">
+                        &nbsp;&nbsp;&nbsp;&nbsp;Everything
+                    </a>
+                    <a href="{{ url_for('flashcards.display_all_favorites') }}">
+                        &nbsp;&nbsp;&nbsp;&nbsp;All favorites
+                    </a>
+                    <div class="dropdown">
+                        <button class="dropbtn">
+                            &nbsp;&nbsp;&nbsp;&nbsp;By chapter
+                        </button>
+                        <div class="dropdown-content">
+                        {% for cid in all_chapters_ids %}
+                            <a href="{{ url_for('flashcards.display_by_chapter', chapter_id=cid) }}">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Chapter {{ cid }}
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div> 
 </head>

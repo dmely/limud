@@ -2,12 +2,23 @@
 
 @import "colors.css";
 
+.dropbtn-main {
+    background-color: var(--geombg);
+    color: var(--fgtext);
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    text-align: center;
+}
+
 .dropbtn {
     background-color: var(--geombg);
     color: var(--fgtext);
     padding: 16px;
     font-size: 16px;
     border: none;
+    min-width: 200px;
+    text-align: left;
 }
 
 /* The container <div> - needed to position the dropdown content */
@@ -29,16 +40,29 @@
 /* Links inside the dropdown */
 .dropdown-content a {
     color: black;
+    background-color: var(--menu-contents-background);
     padding: 12px 16px;
     text-decoration: none;
     display: block;
 }
 
 /* Change color of dropdown links on hover */
-.dropdown-content a:hover {background-color: #ddd;}
+.dropdown-content a:hover {background-color: var(--menu-contents-highlighted);}
 
-/* Show the dropdown menu on hover */
-.dropdown:hover .dropdown-content {display: block;}
+/* Show a dropdown menu under a activated dropdown on hover */
+.dropdown:hover > .dropdown-content {display: block;}
+
+/* Color of a sub-drop-button */
+.dropdown-content .dropbtn {
+    background-color: var(--menu-contents-background);
+    color: black;
+}
+
+.dropdown-content .dropbtn:hover {
+    background-color: var(--menu-contents-highlighted);
+    color: black;
+}
 
 /* Change the background color of the dropdown button when the dropdown content is shown */
-.dropdown:hover .dropbtn {background-color: var(--hover);} 
+#main-menu:hover {background-color: var(--menu-button-selected);} 
+.dropdown:hover > .dropbtn {background-color: var(--submenu-button-selected);} 
