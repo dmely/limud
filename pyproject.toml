@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "limud"
+version = "1.0"
+description = "An overwrought flashcard webapp to learn Biblical Hebrew."
+authors = ["David Alex Mély <hi@davidmely.com>"]
+
+[tool.poetry.dependencies]
+python = "*"
+sqlalchemy = "*"
+alembic = "*"
+flask = "*"
+flask_migrate = "*"
+Flask-SQLAlchemy = "*"
+werkzeug = "*"
+python-bidi = "*"
+click = "*"
+bs4 = "*"
